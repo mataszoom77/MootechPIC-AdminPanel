@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme{
+    --color-moogreen: #ADC81B;
+    --color-moodark: #91A71D;
+}
