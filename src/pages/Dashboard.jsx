@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetchDashboardSummary(token).then(setData).catch(console.error);
+    fetchDashboardSummary().then(setData).catch(console.error);
   }, [token]);
 
   if (!data)

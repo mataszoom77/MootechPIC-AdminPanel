@@ -9,8 +9,8 @@ import {
   uploadSparePartImages,
   fetchAllProducts,
   fetchProductsForSparePart,
-  linkProductToSparePart, // ✅ this was missing
-  unlinkProductFromSparePart, // ✅ also needed
+  linkProductToSparePart,
+  unlinkProductFromSparePart,
 } from "../api/productsDb";
 
 export default function EditSparePart() {
@@ -34,9 +34,9 @@ export default function EditSparePart() {
 
   useEffect(() => {
     Promise.all([
-      getSparePartById(token, id),
-      fetchAllProducts(token),
-      fetchProductsForSparePart(token, id),
+      getSparePartById(id),
+      fetchAllProducts(),
+      fetchProductsForSparePart(id),
     ])
       .then(([data, allProds, linkedProds]) => {
         setSparePart(data);
@@ -53,14 +53,14 @@ export default function EditSparePart() {
   }, [token, id]);
   const handleLinkProduct = async () => {
     if (!selectedProductId) return;
-    await linkProductToSparePart(token, id, selectedProductId);
-    const updated = await fetchProductsForSparePart(token, id);
+    await linkProductToSparePart(id, selectedProductId);
+    const updated = await fetchProductsForSparePart(id);
     setRelatedProducts(updated);
     setSelectedProductId("");
   };
 
   const handleUnlinkProduct = async (productId) => {
-    await unlinkProductFromSparePart(token, id, productId);
+    await unlinkProductFromSparePart(id, productId);
     setRelatedProducts((prev) => prev.filter((p) => p.id !== productId));
   };
 
@@ -108,7 +108,7 @@ export default function EditSparePart() {
       (async () => {
         let uploadedImageUrls = [];
         if (newImages.length > 0) {
-          uploadedImageUrls = await uploadSparePartImages(token, id, newImages);
+          uploadedImageUrls = await uploadSparePartImages(id, newImages);
         }
 
         const updatedForm = {
@@ -117,7 +117,7 @@ export default function EditSparePart() {
           imageUrls: [...form.imageUrls, ...uploadedImageUrls],
         };
 
-        await updateSparePart(token, id, updatedForm);
+        await updateSparePart(id, updatedForm);
       })().then(() => navigate("/products")),
       {
         loading: "Saving changes...",
